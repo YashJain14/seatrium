@@ -67,7 +67,7 @@ export async function getSpreadsheetsByUser(userId: string) {
   try {
     const spreadsheets = await prisma.spreadsheetData.findMany({
       where: { userId },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { updatedAt: 'desc' }
     });
     return spreadsheets;
   } catch (error) {
@@ -90,5 +90,41 @@ export async function getSpreadsheetBySpreadsheetId(spreadsheetId: string) {
   } catch (error) {
     console.error('Error fetching spreadsheet:', error);
     throw new Error('Failed to fetch spreadsheet');
+  }
+}
+
+export async function updateSpreadsheetData(
+  spreadsheetId: string,
+  data: Record<string, string>[],
+  userId: string
+) {
+  try {
+    // First verify the user has access to this spreadsheet
+    const spreadsheet = await prisma.spreadsheetData.findFirst({
+      where: {
+        spreadsheetId: spreadsheetId,
+        userId: userId,
+      },
+    });
+
+    if (!spreadsheet) {
+      throw new Error('Spreadsheet not found or access denied');
+    }
+
+    // Update the spreadsheet data
+    const updatedSpreadsheet = await prisma.spreadsheetData.update({
+      where: {
+        spreadsheetId: spreadsheetId,
+      },
+      data: {
+        data: data,
+        updatedAt: new Date(),
+      },
+    });
+
+    return updatedSpreadsheet;
+  } catch (error) {
+    console.error('Error updating spreadsheet data:', error);
+    throw new Error('Failed to update spreadsheet data');
   }
 }
