@@ -1,179 +1,122 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Share, Edit } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { DescribeProductChatbot } from "@/components/describe-product-chatbot"
-import { BillOfMaterials } from "@/components/bill-of-materials"
-import { EcoScanAssessment } from "@/components/ecoscan-assessment"
-import type { AssessmentData, ProductDescription } from "@/types/assessment"
+import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
-const initialData: AssessmentData = {
-  productDescription: {
-    name: "",
-    type: "",
-    propulsionSystem: "",
-    weight: 0,
-    length: 0,
-    capacity: 0,
-  },
-  materials: [
-    {
-      id: "1",
-      path: "1",
-      level: 0,
-      label: "Ship",
-      amount: 1,
-      unit: "Unit",
-      location: "South Korea",
-      expanded: true,
-      transport: { distance: 0, unit: "km", type: "ship" },
-      children: [
-        {
-          id: "1.1",
-          path: "1.1",
-          level: 1,
-          label: "Hull",
-          amount: 1,
-          unit: "Unit",
-          location: "South Korea",
-          expanded: true,
-          transport: { distance: 300, unit: "km", type: "truck" },
-          children: [
-            {
-              id: "1.1.1",
-              path: "1.1.1",
-              level: 2,
-              label: "Hull Frame",
-              amount: 50000,
-              unit: "kg",
-              material: "High-strength carbon steel",
-              quality: "Fair",
-              location: "China",
-              transport: { distance: 800, unit: "km", type: "ship" },
-            },
-            {
-              id: "1.1.2",
-              path: "1.1.2",
-              level: 2,
-              label: "Hull Plating",
-              amount: 30000,
-              unit: "kg",
-              material: "AH36 marine-grade steel",
-              quality: "Fair",
-              location: "South Korea",
-              transport: { distance: 300, unit: "km", type: "truck" },
-            },
-          ],
-        },
-      ],
-    },
-  ],
-  impactMetrics: [
-    {
-      title: "Climate Change",
-      subtitle: "Global Warming Potential",
-      value: 206000,
-      unit: "kg CO2-eq",
-    },
-    {
-      title: "Water Use",
-      subtitle: "Water Consumption Potential",
-      value: 2620,
-      unit: "m3",
-    },
-    {
-      title: "Land Use",
-      subtitle: "Agricultural Land Occupation",
-      value: 4760,
-      unit: "m2*a crop-eq",
-    },
-  ],
-  lifecycleStages: [
-    { name: "Distribution Storage", percentage: 4.84, color: "#60A5FA" },
-    { name: "Acquisition Preprocessing", percentage: 95.2, color: "#4F46E5" },
-  ],
-  modelDetails: {
-    name: "Ship EcoScan LCA",
-    author: "CarbonGraph EcoScan",
-    backgroundDatasets: "Ecoinvent 3.9.1 Allocation Cut-off by Classification",
-    versionDate: "February 10, 2025",
-    versionDescription: "EcoScan Version — This is the first version of your model, as created by EcoScan.",
-    functionalUnit: "1 Unit of Ship",
-    practitionerNotes:
-      "A ship is a large marine vessel designed for transportation or specialized operations on water. This specific ship features an LNG-electric hybrid propulsion system, combining a liquefied natural gas (LNG) engine and an electric motor for efficient energy use. The hull is constructed from high-strength carbon steel and AH36 marine-grade steel, with welding rods used for assembly. The propulsion system includes components such as an LNG engine block...",
-    location: "Global",
-  },
-}
-
-const steps = [
-  { id: 1, name: "Describe Product" },
-  { id: 2, name: "Bill of Materials" },
-  { id: 3, name: "EcoScan Assessment" },
-] as const
-
-export default function Assessment() {
-  const [currentStep, setCurrentStep] = useState(1)
-  const [assessmentData, setAssessmentData] = useState<AssessmentData>(initialData)
-
-  const handleProductDescription = (productDescription: ProductDescription) => {
-    setAssessmentData((prev) => ({ ...prev, productDescription }))
-    setCurrentStep(2)
-  }
-
-  const handleBillOfMaterials = (materials: AssessmentData["materials"]) => {
-    setAssessmentData((prev) => ({ ...prev, materials }))
-    setCurrentStep(3)
-  }
-
-  const handleAssessmentComplete = () => {
-    console.log("Assessment completed:", assessmentData)
-    // Here you would typically send the data to a server or perform further actions
-  }
+export default function LandingPage() {
+  const { isSignedIn, user } = useUser();
+  const router = useRouter();
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
-          <h1 className="text-2xl font-bold">Ship EcoScan LCA</h1>
-          <span className="px-2 py-1 text-sm bg-gray-100 rounded">Version 1</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <Button variant="outline" size="sm">
-            <Share className="w-4 h-4 mr-2" />
-            Share
-          </Button>
-          <Button size="sm">
-            <Edit className="w-4 h-4 mr-2" />
-            Edit Active Version
-          </Button>
-        </div>
-      </div>
-
-      {/* Progress Steps */}
-      <div className="flex items-center justify-between mb-12">
-        {steps.map((step, index) => (
-          <div key={step.id} className="flex items-center">
-            <div className={`flex items-center ${index !== 0 ? "ml-4" : ""}`}>
-              <Button variant={step.id === currentStep ? "default" : "outline"} className="rounded-full px-6">
-                {step.name}
-              </Button>
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Section */}
+      <div className="relative overflow-hidden">
+        {/* Navigation */}
+        <nav className="absolute top-0 left-0 w-full z-10 p-6">
+          <div className="max-w-7xl mx-auto flex justify-between items-center">
+            {/* Logo */}
+            <div className="flex items-center">
+              <Image 
+                src="/seatrium-logo.svg" 
+                alt="Seatrium" 
+                width={150} 
+                height={40}
+                className="h-10 w-auto"
+              />
             </div>
-            {index < steps.length - 1 && <div className="h-px w-full bg-gray-300 mx-4" />}
+            
+            {/* Auth Button */}
+            <div>
+              {isSignedIn ? (
+                <div className="flex items-center gap-4">
+                  <span className="text-white">
+                    Welcome, {user.firstName}
+                  </span>
+                  <button
+                    onClick={() => router.push('/chatbot')}
+                    className="bg-green-500 text-white px-6 py-2 rounded-full
+                             hover:bg-green-600 transition-colors duration-200
+                             focus:outline-none focus:ring-2 focus:ring-green-300"
+                  >
+                    Go to App
+                  </button>
+                  <SignOutButton>
+                    <button className="bg-white text-blue-600 px-6 py-2 rounded-full
+                                     hover:bg-blue-50 transition-colors duration-200
+                                     focus:outline-none focus:ring-2 focus:ring-blue-300">
+                      Sign Out
+                    </button>
+                  </SignOutButton>
+                </div>
+              ) : (
+                <SignInButton>
+                  <button className="bg-white text-blue-600 px-6 py-2 rounded-full
+                                   hover:bg-blue-50 transition-colors duration-200
+                                   focus:outline-none focus:ring-2 focus:ring-blue-300">
+                    Sign In
+                  </button>
+                </SignInButton>
+              )}
+            </div>
           </div>
-        ))}
+        </nav>
+
+        {/* Hero Content */}
+        <div className="relative bg-blue-600 pt-32 pb-20 sm:pt-40 sm:pb-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center">
+              <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
+                <span className="block">Streamline Your</span>
+                <span className="block">Steel Manufacturing Data</span>
+              </h1>
+              <p className="mt-6 max-w-2xl mx-auto text-xl text-blue-100">
+                Efficiently collect and manage sustainability data for your steel manufacturing process. 
+                Make informed decisions with comprehensive data analysis.
+              </p>
+              
+              {/* CTA Buttons */}
+              <div className="mt-10 flex justify-center gap-4">
+                {isSignedIn ? (
+                  <button
+                    onClick={() => router.push('/chatbot')}
+                    className="bg-green-500 text-white px-8 py-3 rounded-full
+                             text-lg font-semibold hover:bg-green-600 
+                             transition-colors duration-200
+                             focus:outline-none focus:ring-2 focus:ring-green-300"
+                  >
+                    Launch Application
+                  </button>
+                ) : (
+                  <SignInButton>
+                    <button className="bg-white text-blue-600 px-8 py-3 rounded-full
+                                     text-lg font-semibold hover:bg-blue-50 
+                                     transition-colors duration-200
+                                     focus:outline-none focus:ring-2 focus:ring-blue-300">
+                      Get Started
+                    </button>
+                  </SignInButton>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Decorative blob */}
+          <div className="absolute inset-y-0 right-0 hidden lg:block lg:left-2/3">
+            <svg
+              className="absolute inset-0 h-full w-full text-blue-500"
+              preserveAspectRatio="none"
+              viewBox="0 0 100 100"
+            >
+              <path
+                d="M0 0L100 0L100 100L25 100C11.1929 100 0 88.8071 0 75V0Z"
+                fill="currentColor"
+                opacity="0.1"
+              />
+            </svg>
+          </div>
+        </div>
       </div>
-
-      {/* Content */}
-      {currentStep === 1 && (
-        <DescribeProductChatbot initialData={assessmentData.productDescription} onComplete={handleProductDescription} />
-      )}
-      {currentStep === 2 && (
-        <BillOfMaterials initialData={assessmentData.materials} onComplete={handleBillOfMaterials} />
-      )}
-      {currentStep === 3 && <EcoScanAssessment data={assessmentData} onComplete={handleAssessmentComplete} />}
     </div>
-  )
-}
-
+  );
+};

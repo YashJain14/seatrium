@@ -1,0 +1,19 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Product {
+  id             String   @id @default(uuid())
+  userId         String
+  organizationId String
+  productName    String
+  /// Save the column names as an array of strings.
+  columns        String[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
