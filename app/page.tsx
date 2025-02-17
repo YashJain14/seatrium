@@ -34,7 +34,7 @@ export default function LandingPage() {
                     Welcome, {user.firstName}
                   </span>
                   <button
-                    onClick={() => router.push('/chatbot')}
+                    onClick={() => router.push('/dashboard')}
                     className="bg-green-500 text-white px-6 py-2 rounded-full
                              hover:bg-green-600 transition-colors duration-200
                              focus:outline-none focus:ring-2 focus:ring-green-300"
@@ -79,7 +79,7 @@ export default function LandingPage() {
               <div className="mt-10 flex justify-center gap-4">
                 {isSignedIn ? (
                   <button
-                    onClick={() => router.push('/chatbot')}
+                    onClick={() => router.push('/dashboard')}
                     className="bg-green-500 text-white px-8 py-3 rounded-full
                              text-lg font-semibold hover:bg-green-600 
                              transition-colors duration-200
