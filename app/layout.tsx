@@ -20,7 +20,7 @@ export default function RootLayout({
         <header className="py-4 border-b">
           <div className="container mx-auto px-4">
             <h1 className="text-2xl font-bold text-blue-600">
-              Seatrium Scope 3 Emissions Calculator
+              Seatrium 
             </h1>
           </div>
         </header>

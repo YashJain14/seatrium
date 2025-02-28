@@ -9,6 +9,8 @@ export interface Question {
   text: string;
   type: 'checkbox' | 'radio';
   options: Option[];
+  categoryName?: string; // Added for sequential questions
+  categoryPercentage?: number; // Added for sequential questions
 }
 
 export interface Category {
@@ -32,4 +34,5 @@ export interface CalculationResult {
     impact: number;
   }[];
   totalEmissionFactor: number;
+  absoluteEmissionFactor?: number; // Added for the actual emissions in tCO2/tonne
 }
