@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { QuestionnaireData } from '../lib/types';
+import { QuestionnaireData, CalculationResult } from '../lib/types';
 import { calculateEmissionFactor } from '../lib/calculator';
 import { CategorySection } from './CategorySection';
 import { ResultsPanel } from './ResultsPanel';
@@ -20,7 +20,7 @@ export function QuestionnaireForm({ data }: QuestionnaireFormProps) {
   const [productName, setProductName] = useState('');
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
   const [showResults, setShowResults] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<CalculationResult | null>(null);
   
   const totalSteps = data.categories.length;
   const progressPercentage = currentStep >= 0 ? ((currentStep + 1) / totalSteps) * 100 : 0;
@@ -96,7 +96,7 @@ export function QuestionnaireForm({ data }: QuestionnaireFormProps) {
     );
   }
   
-  if (showResults) {
+  if (showResults && result) {
     return (
       <ResultsPanel
         result={result}
